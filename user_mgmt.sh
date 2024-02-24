@@ -1,4 +1,8 @@
 #!/usr/bin/bash
+# Date: 24/02/2024
+# This is script for user & group management in linux.
+# Usage: bash user_mgmt.sh
+# Author: Prateek Karkera & Bhikesh Khute
 
 PASSWORD="techBootcamp@1"
 
@@ -8,12 +12,14 @@ authenticate() {
 	do
 		read -sp "Enter password: " inputPassword
 		if [ $inputPassword = $PASSWORD ]
-		then
+		then 
+			echo -e "\n---------------------------------------------"
 			echo "Authentication Successful!"
+			echo "---------------------------------------------"
 			return 0
 		else
 			echo "Incorrect password. Please try again."
-			((attempts++))
+			((attempt++))
 		fi
 	done
 	echo "Too many incorrect attempts. Exiting..."
