@@ -28,7 +28,7 @@ addUser() {
 
 removeUser() {
 	read -p "Enter username to remove: " username
-	sudo userdel -r $username
+	sudo userdel -r $username 2>/dev/null
 	echo "User $username deleted successfully!"
 }
 
