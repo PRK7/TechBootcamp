@@ -24,6 +24,9 @@ addUser() {
 	read -p "Enter username to add: " username
 	sudo useradd -m $username
 	echo "User $username added successfully!"
+	read -sp "Enter password for $username: " userpass
+	echo $username:$userpass | sudo chpasswd
+	echo "Password for $username added successfully!"
 }
 
 removeUser() {
