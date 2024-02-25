@@ -11,7 +11,7 @@ main() {
 	clear
 	echo "Welcome!"
 
-	authenticate || exit 1
+	#authenticate || exit 1
 
 	while true
 	do
@@ -77,8 +77,9 @@ authenticate() {
 }
 
 addUser() {
+	echo "---------------------------------------------"
 	read -p "Enter username to add: " username
-	sudo useradd -m -e 2025-01-01 $username #Added Expiry date of account as well
+	sudo useradd -m -e 2025-01-01 -s /bin/bash $username #Added Expirydate and shell as bash
 	echo "User $username added successfully!"
 	read -sp "Enter password for $username: " userpass
 	echo $username:$userpass | sudo chpasswd
@@ -86,56 +87,65 @@ addUser() {
 }
 
 changeUserPassword() {
-    read -p "Enter username: " username
-    read -sp "Enter new password for $username: " new_password
-    echo
-    echo "$username:$new_password" | sudo chpasswd
-    echo "Password for $username changed successfully."
+	echo "---------------------------------------------"
+    	read -p "Enter username: " username
+    	read -sp "Enter new password for $username: " new_password
+    	echo "$username:$new_password" | sudo chpasswd
+    	echo "Password for $username changed successfully."
 }
 
 removeUser() {
+	echo "---------------------------------------------"
 	read -p "Enter username to remove: " username
 	sudo userdel -r $username 2>/dev/null
 	echo "User $username deleted successfully!"
 }
 
 listUsers() {
+	echo "---------------------------------------------"
 	echo "List of all users:"
-	cut -d: -f1 /etc/passwd
+	grep -E 100[0-9] /etc/passwd | cut -d: -f1
 }
 
 downloadUserListCSV() {
-    echo "Downloading list of users in CSV..."
-    echo "Username,User ID,Home Directory" > user_list.csv
-    cut -d: -f1,3,6 /etc/passwd >> user_list.csv
-    echo "User list downloaded to user_list.csv"
+    	echo "---------------------------------------------"
+    	echo "Downloading list of users in CSV..."
+    	sudo cp /etc/passwd /tmp/passwd
+   	echo "Username,User ID,Home Directory" > listofusers.csv
+    	sed 's/:/,/g' /tmp/passwd | grep -E 100[0-9] | cut -d, -f1,3,6 >> listofusers.csv
+    	echo "User list downloaded to listofusers.csv"
 }
 
 modifyUserPermissions() {
+	echo "---------------------------------------------"
 	read -p "Enter username to modify permissions: " username
 	read -p "Enter permission mode (e.g., 755, 700, 777): " permission_mode
-	sudo chmod $permission_mode /home/$username
+	sudo chmod -R $permission_mode /home/$username
 	echo "Permissions modified successfully for user $username."
 }
 
 addGroup() {
+	echo "---------------------------------------------"
 	read -p "Enter group name to add: " groupname
 	sudo groupadd $groupname
 	echo "Group $groupname added successfully!"
 }
 
 removeGroup() {
+	echo "---------------------------------------------"
 	read -p "Enter group name to remove: " groupname
 	sudo groupdel $groupname
 	echo "Group $groupname deleted successfully!"
 }
 
 listGroups() {
+	echo "---------------------------------------------"
 	echo "List of all groups:"
-	cut -d: -f1 /etc/group
+	grep -E 100[0-9] /etc/group | cut -d: -f1
 }
 
 modifyGroupPermissions() {
+	echo "---------------------------------------------"
 	read -p "Enter group name to modify permissions: " groupname
 	read -p "Enter permission mode (e.g., 755, 700, 777): " permission_mode
 	sudo chmod $permission_mode /home/$groupname
@@ -143,6 +153,7 @@ modifyGroupPermissions() {
 }
 
 addUsertoGroup() {
+	echo "---------------------------------------------"
 	read -p "Enter the username: " username
 	userexists=$(grep -w $username /etc/passwd)
 	if [ -z "$userexists" ]
@@ -158,6 +169,7 @@ addUsertoGroup() {
 }
 
 removeUserfromGroup() {
+	echo "---------------------------------------------"
 	read -p "Enter username: " username
 	read -p "Enter group name: " groupname
 	sudo deluser $username $groupname
@@ -165,12 +177,14 @@ removeUserfromGroup() {
 }
 
 checkUserGroups() {
+	echo "---------------------------------------------"
 	read -p "Enter username: " username
 	echo "Groups for user $username:"
 	groups $username | cut -d: -f2
 }
 
 checkGroupUsers() {
+	echo "---------------------------------------------"
 	read -p "Enter group name: " groupname
 	echo "Users in group $groupname:"
 	getent group $groupname | cut -d: -f4
