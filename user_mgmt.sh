@@ -1,17 +1,67 @@
-#!/usr/bin/bash
-# Date: 24/02/2024
+﻿#!/usr/bin/bash
+# Date: 25/02/2024
 # This is script for user & group management in linux.
 # Usage: bash user_mgmt.sh
 # Author: Prateek Karkera & Bhikesh Khute
 
+
 PASSWORD="jimjam"
+
+main() {
+	clear
+	echo "Welcome!"
+
+	authenticate || exit 1
+
+	while true
+	do
+		echo "---------------------------------------------"
+		echo "Please select an option: "
+		echo "1. Add user"
+		echo "2. Change User Password"
+		echo "3. Remove user"
+		echo "4. List all users"
+		echo "5. Download list of users in CSV"
+		echo "6. Modify user permissions"
+		echo "7. Add a group"
+		echo "8. Remove a group"
+		echo "9. List all groups"
+		echo "10. Modify group permissions"
+		echo "11. Add user to a group"
+		echo "12. Remove user from group"
+		echo "13. Check which groups a user is in"
+		echo "14. Check which users are in a particular group"
+		echo "15. Exit"
+		read -p "Enter your choice: " choice
+
+		case $choice in
+			1) addUser;;
+			2) changeUserPassword;;
+			3) removeUser;;
+			4) listUsers;;
+			5) downloadUserListCSV;;
+			6) modifyUserPermissions;;
+			7) addGroup;;
+			8) removeGroup;;
+			9) listGroups;;
+			10) modifyGroupPermissions;;
+			11) addUsertoGroup;;
+			12) removeUserfromGroup;;
+			13) checkUserGroups;;
+			14) checkGroupUsers;;
+			15) echo "Exiting..";
+				exit;;
+			*) echo "Invalid choice. Please try again.";;
+		esac
+	done
+}
 
 authenticate() {
 	local attempt=0
 	while [ $attempt -lt 3 ]
 	do
 		read -sp "Enter password: " inputPassword
-		if [ $inputPassword = $PASSWORD ]
+		if [[ "$inputPassword" == "$PASSWORD" ]]
 		then 
 			echo -e "\n---------------------------------------------"
 			echo "Authentication Successful!"
@@ -35,6 +85,14 @@ addUser() {
 	echo "Password for $username added successfully!"
 }
 
+changeUserPassword() {
+    read -p "Enter username: " username
+    read -sp "Enter new password for $username: " new_password
+    echo
+    echo "$username:$new_password" | sudo chpasswd
+    echo "Password for $username changed successfully."
+}
+
 removeUser() {
 	read -p "Enter username to remove: " username
 	sudo userdel -r $username 2>/dev/null
@@ -44,6 +102,13 @@ removeUser() {
 listUsers() {
 	echo "List of all users:"
 	cut -d: -f1 /etc/passwd
+}
+
+downloadUserListCSV() {
+    echo "Downloading list of users in CSV..."
+    echo "Username,User ID,Home Directory" > user_list.csv
+    cut -d: -f1,3,6 /etc/passwd >> user_list.csv
+    echo "User list downloaded to user_list.csv"
 }
 
 modifyUserPermissions() {
@@ -111,48 +176,4 @@ checkGroupUsers() {
 	getent group $groupname | cut -d: -f4
 }
 
-main() {
-	clear
-	echo "Welcome!"
-
-	authenticate || exit 1
-
-	while true
-	do
-		echo "---------------------------------------------"
-		echo "Please select an option: "
-		echo "1. Add user"
-		echo "2. Remove user"
-		echo "3. List all users"
-		echo "4. Modify user permissions"
-		echo "5. Add a group"
-		echo "6. Remove a group"
-		echo "7. List all groups"
-		echo "8. Modify group permissions"
-		echo "9. Add user to a group"
-		echo "10. Remove user from group"
-		echo "11. Check which groups a user is in"
-		echo "12. Check which users are in a particular group"
-		echo "13. Exit"
-		read -p "Enter your choice: " choice
-
-		case $choice in
-			1) addUser;;
-			2) removeUser;;
-			3) listUsers;;
-			4) modifyUserPermissions;;
-			5) addGroup;;
-			6) removeGroup;;
-			7) listGroups;;
-			8) modifyGroupPermissions;;
-			9) addUsertoGroup;;
-			10) removeUserfromGroup;;
-			11) checkUserGroups;;
-			12) checkGroupUsers;;
-			13) echo "Exiting..";
-				exit;;
-			*) echo "Invalid choice. Please try again.";;
-		esac
-	done
-}
 main
