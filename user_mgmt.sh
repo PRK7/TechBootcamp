@@ -81,16 +81,13 @@ addUser() {
 	read -p "Enter username to add: " username
 	sudo useradd -m -e 2025-01-01 -s /bin/bash $username #Added Expirydate and shell as bash
 	echo "User $username added successfully!"
-	read -sp "Enter password for $username: " userpass
-	echo $username:$userpass | sudo chpasswd
-	echo "Password for $username added successfully!"
 }
 
 changeUserPassword() {
 	echo "---------------------------------------------"
     	read -p "Enter username: " username
-    	read -sp "Enter new password for $username: " new_password
-    	echo "$username:$new_password" | sudo chpasswd
+    	read -p "Enter new password for $username: " new_password
+    	sudo passwd $username
     	echo "Password for $username changed successfully."
 }
 
@@ -111,8 +108,8 @@ downloadUserListCSV() {
     	echo "---------------------------------------------"
     	echo "Downloading list of users in CSV..."
     	sudo cp /etc/passwd /tmp/passwd
-   	echo "Username,User ID,Home Directory" > listofusers.csv
-    	sed 's/:/,/g' /tmp/passwd | grep -E 100[0-9] | cut -d, -f1,3,6 >> listofusers.csv
+   	echo "Username,User ID,Home Directory" > /home/$USER/listofusers.csv
+    	sed 's/:/,/g' /tmp/passwd | grep -E 100[0-9] | cut -d, -f1,3,6 >> /home/$USER/listofusers.csv
     	echo "User list downloaded to listofusers.csv"
 }
 
