@@ -79,74 +79,117 @@ authenticate() {
 addUser() {
 	echo "---------------------------------------------"
 	read -p "Enter username to add: " username
-	sudo useradd -m -e 2025-01-01 -s /bin/bash $username #Added Expirydate and shell as bash
-	echo "User $username added successfully!"
+	if sudo useradd -m -e 2025-01-01 -s /bin/bash $username #Added Expirydate and shell as bash
+	then
+		echo "User $username added successfully!"
+	else
+		echo "Failed to add user $username. Details: $?"
+	fi
 }
 
 changeUserPassword() {
 	echo "---------------------------------------------"
     	read -p "Enter username: " username
-    	read -p "Enter new password for $username: " new_password
-    	sudo passwd $username
-    	echo "Password for $username changed successfully."
+    	if sudo passwd $username
+		then
+    		echo "Password for $username changed successfully."
+		else
+			echo "Failed to change password for $username."
+		fi
 }
 
 removeUser() {
 	echo "---------------------------------------------"
 	read -p "Enter username to remove: " username
-	sudo userdel -r $username 2>/dev/null
-	echo "User $username deleted successfully!"
+	if sudo userdel -r $username 2>/dev/null
+	then
+		echo "User $username deleted successfully!"
+	else
+		echo "Failed to delete user $username."
+	fi
 }
 
 listUsers() {
 	echo "---------------------------------------------"
 	echo "List of all users:"
-	grep -E 100[0-9] /etc/passwd | cut -d: -f1
+	if grep -E 100[0-9] /etc/passwd | cut -d: -f1
+	then
+		return 0
+	else
+		echo "Failed to list users."
+		return 1
+	fi
 }
 
 downloadUserListCSV() {
     	echo "---------------------------------------------"
     	echo "Downloading list of users in CSV..."
-    	sudo cp /etc/passwd /tmp/passwd
-   	echo "Username,User ID,Home Directory" > /home/$USER/listofusers.csv
-    	sed 's/:/,/g' /tmp/passwd | grep -E 100[0-9] | cut -d, -f1,3,6 >> /home/$USER/listofusers.csv
-    	echo "User list downloaded to listofusers.csv"
+    	if sudo cp /etc/passwd /tmp/passwd && \
+   			echo "Username,User ID,Home Directory" > /home/$USER/listofusers.csv && \
+    		sed 's/:/,/g' /tmp/passwd | grep -E 100[0-9] | cut -d, -f1,3,6 >> /home/$USER/listofusers.csv
+    	then
+			echo "User list downloaded to listofusers.csv"
+		else
+			echo "Failed to download user list."
+		fi
 }
 
 modifyUserPermissions() {
 	echo "---------------------------------------------"
 	read -p "Enter username to modify permissions: " username
 	read -p "Enter permission mode (e.g., 755, 700, 777): " permission_mode
-	sudo chmod -R $permission_mode /home/$username
-	echo "Permissions modified successfully for user $username."
+	if sudo chmod -R $permission_mode /home/$username
+	then
+		echo "Permissions modified successfully for user $username."
+	else
+		echo "Failed to modify permissions for user $username."
+	fi
 }
 
 addGroup() {
 	echo "---------------------------------------------"
 	read -p "Enter group name to add: " groupname
-	sudo groupadd $groupname
-	echo "Group $groupname added successfully!"
+	if sudo groupadd $groupname
+	then
+		echo "Group $groupname added successfully!"
+	else
+		echo "Failed to add group $groupname."
+	fi
 }
 
 removeGroup() {
 	echo "---------------------------------------------"
 	read -p "Enter group name to remove: " groupname
-	sudo groupdel $groupname
-	echo "Group $groupname deleted successfully!"
+	if sudo groupdel $groupname
+	then
+		echo "Group $groupname deleted successfully!"
+	else
+		echo "Failed to delete group $groupname."
+	fi
 }
 
 listGroups() {
 	echo "---------------------------------------------"
 	echo "List of all groups:"
-	grep -E 100[0-9] /etc/group | cut -d: -f1
+	if grep -E 100[0-9] /etc/group | cut -d: -f1
+	then
+		return 0
+	else
+		echo "Failed to list groups."
+		return 1
+	fi
 }
 
 modifyGroupPermissions() {
 	echo "---------------------------------------------"
 	read -p "Enter group name to modify permissions: " groupname
 	read -p "Enter permission mode (e.g., 755, 700, 777): " permission_mode
-	sudo chmod $permission_mode /home/$groupname
-	echo "Permissions modified successfully for group $groupname."
+	if sudo chmod $permission_mode /home/$groupname
+	then
+		echo "Permissions modified successfully for group $groupname."
+	else
+		echo "Failed to modify permissions for group $groupname."
+	fi
 }
 
 addUsertoGroup() {
@@ -169,22 +212,38 @@ removeUserfromGroup() {
 	echo "---------------------------------------------"
 	read -p "Enter username: " username
 	read -p "Enter group name: " groupname
-	sudo deluser $username $groupname
-	echo "User $username removed from group $groupname successfully."
+	if sudo deluser $username $groupname
+	then
+		echo "User $username removed from group $groupname successfully."
+	else
+		echo "Failed to remove $username from group $groupname."
+	fi
 }
 
 checkUserGroups() {
 	echo "---------------------------------------------"
 	read -p "Enter username: " username
 	echo "Groups for user $username:"
-	groups $username | cut -d: -f2
+	if groups $username | cut -d: -f2
+	then
+		return 0
+	else
+		echo "Failed to retrieve groups for user $username."
+		return 1
+	fi
 }
 
 checkGroupUsers() {
 	echo "---------------------------------------------"
 	read -p "Enter group name: " groupname
 	echo "Users in group $groupname:"
-	getent group $groupname | cut -d: -f4
+	if getent group $groupname | cut -d: -f4
+	then
+		return 0
+	else
+		echo "Failed to retrieve users in group $groupname."
+		return 1
+	fi
 }
 
 main
