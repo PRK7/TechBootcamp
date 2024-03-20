@@ -61,6 +61,10 @@
        %opsg ALL=(ALL) NOPASSWD: /bin/sh, /etc/passwd, /bin/cp
       ```
 
+      ```
+       %devg ALL=(ALL) NOPASSWD: /bin/sh, /usr/bin/chpasswd
+      ```
+
 8. Save the file.
    
 9. Create a user/superuser and HR group using root account and add the user to the HR group.

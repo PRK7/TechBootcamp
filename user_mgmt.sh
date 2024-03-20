@@ -26,12 +26,11 @@ main() {
 		echo "7. Add a group"
 		echo "8. Remove a group"
 		echo "9. List all groups"
-		echo "10. Modify group permissions"
-		echo "11. Add user to a group"
-		echo "12. Remove user from group"
-		echo "13. Check which groups a user is in"
-		echo "14. Check which users are in a particular group"
-		echo "15. Exit"
+		echo "10. Add user to a group"
+		echo "11. Remove user from group"
+		echo "12. Check which groups a user is in"
+		echo "13. Check which users are in a particular group"
+		echo "14. Exit"
 		read -p "Enter your choice: " choice
 
 		case $choice in
@@ -44,12 +43,11 @@ main() {
 			7) addGroup;;
 			8) removeGroup;;
 			9) listGroups;;
-			10) modifyGroupPermissions;;
-			11) addUsertoGroup;;
-			12) removeUserfromGroup;;
-			13) checkUserGroups;;
-			14) checkGroupUsers;;
-			15) echo "Exiting..";
+			10) addUsertoGroup;;
+			11) removeUserfromGroup;;
+			12) checkUserGroups;;
+			13) checkGroupUsers;;
+			14) echo "Exiting..";
 				exit;;
 			*) echo "Invalid choice. Please try again.";;
 		esac
@@ -180,17 +178,6 @@ listGroups() {
 	fi
 }
 
-modifyGroupPermissions() {
-	echo "---------------------------------------------"
-	read -p "Enter group name to modify permissions: " groupname
-	read -p "Enter permission mode (e.g., 755, 700, 777): " permission_mode
-	if sudo chmod $permission_mode /home/$groupname
-	then
-		echo "Permissions modified successfully for group $groupname."
-	else
-		echo "Failed to modify permissions for group $groupname."
-	fi
-}
 
 addUsertoGroup() {
 	echo "---------------------------------------------"
