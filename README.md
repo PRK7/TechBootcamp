@@ -1,4 +1,9 @@
 # User Management script for Linux
+
+<p align="center">
+      <img src="https://github.com/PRK7/TechBootcamp/assets/35907619/31201f0c-baf5-4b62-b9f8-f3baaa2b9d8d" />
+</p>
+
 ## Steps for Implementation: 
 
 1. If you have a fresh installation of linux, it is necessary to add password for root account as we will be removing default sudo access for every user . Using the following commands, you can set the root password.
